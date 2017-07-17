@@ -1,2 +1,2 @@
-python E:\demo\demo\manage.py runserver
+python E:\Project\wkb\wkb\web\Doc\demo\manage.py runserver
 pause

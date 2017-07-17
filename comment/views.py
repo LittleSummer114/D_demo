@@ -21,7 +21,7 @@ def commentIndex(request):
 
 
     # open database
-    conn = MySQLdb.connect(host='localhost', user='root', passwd='1234567')
+    conn = MySQLdb.connect(host='116.56.143.18', user='cike', passwd='123456')
     cursor = conn.cursor()
     conn.select_db('topicdemo')
     cursor.execute('SET NAMES utf8;')
