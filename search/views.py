@@ -13,7 +13,7 @@ import chardet
 
 # 检索页面
 def search_index(request):
-    # return render(request, 'search\\index.html')
+    # return render(request, 'search/index.html')
     if request.method == 'POST':# 当提交表单时
         form = SearchForm(request.POST)
         if form.is_valid():
@@ -84,14 +84,14 @@ def search_index(request):
 
 # 检索页面
 def search_result(request):
-    return render(request, 'search\\classification.html')
+    return render(request, 'search/classification.html')
 
 # 话题列表页面
 # def classification(request):
-#     return render(request, 'search\\classification.html')
+#     return render(request, 'search/classification.html')
 
 # 介绍页面
 def introduction(request):
-    return render(request, 'search\\introduction.html')
+    return render(request, 'search/introduction.html')
 
 

@@ -51,7 +51,7 @@ def search_index(request):
     context_dict = {}
 
     # open database
-    conn = MySQLdb.connect(host='localhost', user='root', passwd='1234567')
+    conn = MySQLdb.connect(host='116.56.143.18', user='cike', passwd='123456')
     cursor = conn.cursor()
     conn.select_db('topicdemo')
     cursor.execute('SET NAMES utf8;')
@@ -80,7 +80,7 @@ def search_index(request):
     result = json.dumps(result_list)
 
 
-    return render(request, 'search\\search.html')
+    return render(request, 'search/search.html')
 
 # 检索页面
 def search_result(request):

@@ -86,7 +86,7 @@ def categoryIndex(request):
             #
             # os.system('crawl\\crawl.bat')
 
-    return render(request, 'category\\category.html')
+    return render(request, 'category/category.html')
 
 
 def getTopicList(request):

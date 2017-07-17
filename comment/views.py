@@ -83,7 +83,7 @@ def commentIndex(request):
     conn.commit()
     conn.close()
 
-    return render(request, 'comment\\comment.html', context_dict)
+    return render(request, 'comment/comment.html', context_dict)
 
 
 # 将list中所有unicode转为utf-8

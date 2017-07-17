@@ -89,7 +89,7 @@ def categoryIndex(request):
     return render(request, 'category\\category.html')
 
 
-def getTopicList(request)：
+def getTopicList(request):
     # open database
     conn = MySQLdb.connect(host='116.56.143.18', user='cike', passwd='123456')
     cursor = conn.cursor()
