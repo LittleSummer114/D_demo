@@ -22,7 +22,7 @@ def search_index(request):
             print search_info
 
             # open database
-            conn = MySQLdb.connect(host='localhost', user='root', passwd='1234')
+            conn = MySQLdb.connect(host='localhost', user='root', passwd='')
             cursor = conn.cursor()
             conn.select_db('topicdemo')
             cursor.execute('SET NAMES utf8;')
