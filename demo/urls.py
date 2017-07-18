@@ -23,9 +23,9 @@ urlpatterns = [
     url(r'^introduction/$', search_views.introduction, name = 'introduction_page'),
 
     url(r'^category/', include('category.urls', namespace='category')),
-    url(r'^topic/', include('topic.urls', namespace='topic'))),
-    url(r'^event/', include('event.urls', namespace='event'))),
-    url(r'^comment/', include('comment.urls', namespace='comment'))),
+    url(r'^topic/', include('topic.urls', namespace='topic')),
+    url(r'^event/', include('event.urls', namespace='event')),
+    url(r'^comment/', include('comment.urls', namespace='comment')),
 
     url(r'^admin/', admin.site.urls),
 ]
