@@ -24,7 +24,7 @@ def topicIndex(request):
     context_dict['tid'] = tid
 
     # open database
-    conn = MySQLdb.connect(host='localhost', user='cike', passwd='1234567')
+    conn = MySQLdb.connect(host='localhost', user='cike', passwd='123456')
     cursor = conn.cursor()
     conn.select_db('topicdemo')
     cursor.execute('SET NAMES utf8;')
@@ -71,7 +71,7 @@ def topicIndex(request):
     myTopicInfo.area_data = results[21].encode('utf-8')
     myTopicInfo.save()
 
-    return render(request, 'topic\\topic.html',  context_dict)
+    return render(request, 'topic/topic.html',  context_dict)
 
 # 读取事件信息
 def getEventListData(request):
