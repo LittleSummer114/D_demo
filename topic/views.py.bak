@@ -46,7 +46,7 @@ def topicIndex(request):
     sql_str = "select * from result_topic where topic_id = %s " % tid
     cursor.execute(sql_str)
     results = cursor.fetchone()
-    print 'results: ', results[0]
+    #print 'results: ',results[0]
 
     myTopicInfo, created = TopicInfo.objects.get_or_create(topic_id = tid)
     myTopicInfo.date_info = results[1].encode('utf-8')

@@ -24,7 +24,7 @@ def topicIndex(request):
     context_dict['tid'] = tid
 
     # open database
-    conn = MySQLdb.connect(host='localhost', user='cike', passwd='123456')
+    conn = MySQLdb.connect(host='116.56.143.18', user='cike', passwd='123456')
     cursor = conn.cursor()
     conn.select_db('topicdemo')
     cursor.execute('SET NAMES utf8;')
