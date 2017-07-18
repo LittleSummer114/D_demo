@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^$', search_views.search_index, name = 'search_page'),
     url(r'^introduction/$', search_views.introduction, name = 'introduction_page'),
 
-    url(r'^category/', include('category.urls')),
+    url(r'^category/', include('category.urls', namespace='category')),
     url(r'^topic/', include('topic.urls')),
     url(r'^event/', include('event.urls')),
     url(r'^comment/', include('comment.urls')),

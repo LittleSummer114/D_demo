@@ -80,7 +80,7 @@ def search_index(request):
     result = json.dumps(result_list)
 
 
-    return render(request, 'search\\search.html')
+    return render(request, 'search/search.html')
 
 # 检索页面
 def search_result(request):
