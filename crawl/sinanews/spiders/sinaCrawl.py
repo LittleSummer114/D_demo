@@ -19,23 +19,22 @@ class DmozSpider(scrapy.spider.Spider):
     name = "sinanews"    #唯一标识，启动spider时即指定该名称
     allowed_domains = ["sina.com.cn"]
     start_urls = [
-         "http://finance.sina.com.cn/stock/y/2016-01-07/doc-ifxnkkux0922639.shtml"
+        "http://finance.sina.com.cn/stock/y/2016-01-07/doc-ifxnkkux0922639.shtml"
     ]
 
     def __init__(self, topicinfo=None, *args, **kwargs):
-
+        super(DmozSpider, self).__init__(*args, **kwargs)
         topicinfo_list = topicinfo.split(',')
         self.topic_urlcode = topicinfo_list[0]
         self.topic_id = int(topicinfo_list[1])
 
-        self.conn = MySQLdb.connect(host='localhost', user='root', passwd='1234')
+        self.conn = MySQLdb.connect(host='localhost', user='root', passwd='123456')
         self.conn.set_character_set('utf8')
         self.cursor = self.conn.cursor()
         self.cursor.execute('SET NAMES utf8;')
         self.cursor.execute('SET CHARACTER SET utf8;')
         self.cursor.execute('SET character_set_connection=utf8;')
-        self.conn.select_db('newsdemo')
-
+        self.conn.select_db('topicdemo')
         self.output_f = open(ur'problem.txt', 'w')
 
     def parse(self, response):
@@ -44,9 +43,11 @@ class DmozSpider(scrapy.spider.Spider):
         count = 0
         for url in results:
             # print url[1]
-            print count
+            print "count", count
             count += 1
             yield scrapy.http.Request(url[1], callback=self.parse_news)
+            # if(count==1):
+            #     break
 
         # 爬取正文和评论
     def parse_news(self, response):
@@ -61,13 +62,10 @@ class DmozSpider(scrapy.spider.Spider):
         #
         # return
 
-
         sel = HtmlXPathSelector(response)
 
-
-
         # title
-        title_xpath_list = ['//*[@id="artibodyTitle"]/text()', '//*[@id="main_title"]/text()', '//*[@id="content_body"]/div[1]/div[1]/text()']
+        title_xpath_list = ['/html/head/title/text()']
         news_title = ''
         for i in range(0, len(title_xpath_list)):
             try:
@@ -75,12 +73,11 @@ class DmozSpider(scrapy.spider.Spider):
                 break
             except:
                 continue
-        # if news_title == '':
-            # print 'news_title', response
-            # self.output_f.write('news_title:%s\n' % response)
+        print 'news_title', news_title
+        #     self.output_f.write('news_title:%s\n' % response)
         # print news_title
 
-        time_xpath_list = ['//*[@id="wrapOuter"]/div/div[4]/span/text()','//*[@id="page-tools"]/span/span[1]/text()','//*[@id="content_body"]/div[1]/span[1]/text()','//*[@id="navtimeSource"]/text()','//*[@id="pub_date"]/text()']
+        time_xpath_list = ["/html/head/meta[@name='weibo: article:create_at']/@content"]
         news_time = ''
         for i in range(0, len(time_xpath_list)):
             try:
@@ -93,11 +90,11 @@ class DmozSpider(scrapy.spider.Spider):
         # if news_time == '':
             # print 'news_time', response
             # self.output_f.write('news_time:%s\n' % response)
-        # print news_time
+        print news_time
 
 
         # mainbody
-        mainbody_full_xpath_list = ['//*[@id="artibody"]/p/text()','//*[@id="content_body"]/div[2]/div[1]/p/text()']
+        mainbody_full_xpath_list = ['//div[@id="artibody"]/p/text()']
         mainbody_full = ''
         for i in range(0, len(mainbody_full_xpath_list)):
             try:
@@ -108,7 +105,7 @@ class DmozSpider(scrapy.spider.Spider):
         mainbody = ''
         for p in mainbody_full:
             mainbody = mainbody + '\n' + p.strip()
-        # print mainbody
+        print mainbody
 
         # comment
         news_comment_url = ''
@@ -148,7 +145,7 @@ class DmozSpider(scrapy.spider.Spider):
             # print news_comment_channel, news_comment_id
 
             self.output_f.write('comment_url:%s,%s,%s\n' % (response,news_comment_channel, news_comment_id))
-
+        print('测试书',news_comment_id,news_title)
         if news_comment_id != '' and news_title != '':
             self.cursor.execute("insert into crawl_news values(null,%s,%s,%s,%s,%s,%s,%s)", (news_comment_id,news_comment_channel,news_time.encode('utf-8'),news_title.encode('utf-8'),mainbody.encode('utf-8'),response_url,self.topic_id))
             self.conn.commit()
@@ -186,7 +183,6 @@ class DmozSpider(scrapy.spider.Spider):
                         is_verified = config.find('wb_verified_type')
                         if is_verified != -1:
                             wb_verified_type = config[is_verified + 17]
-
                         # comment
                         comment_body = status_dic['content'].decode('unicode-escape').encode('utf-8')
                         area = status_dic['area'].decode('unicode-escape').encode('utf-8')
