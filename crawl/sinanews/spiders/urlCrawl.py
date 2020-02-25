@@ -1,17 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # __author__ = 'hdp'
-
 import scrapy
 from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
 import urllib2
 import MySQLdb
-
 import time
 from sinanews.items import UrlsInfoItem, NewsInfoItem, CommmentInfoItem
-
-
 
 class DmozSpider(scrapy.spider.Spider):
     print 'test'
@@ -20,7 +16,6 @@ class DmozSpider(scrapy.spider.Spider):
     # start_urls = [
     #      # "http://search.sina.com.cn/?c=news&q=%CE%BA%D4%F2%CE%F7&range=title&num=20&col=1_7&source=&from=&country=&size=&time=&a=&page=1&pf=2131425466&ps=2134309112&dpc=1"
     #     "http://search.sina.com.cn/?q=%CE%BA%D4%F2%CE%F7+%C6%CE%CC%EF&range=title&c=news&sort=time"
-    # ]
 
     def __init__(self, topicinfo=None, *args, **kwargs):
         super(DmozSpider, self).__init__(*args, **kwargs)
@@ -31,10 +26,7 @@ class DmozSpider(scrapy.spider.Spider):
         print self.topic_urlcode
         print self.topic_id
 
-        # self.start_urls = ['http://search.sina.com.cn/?c=news&q=%s&range=title&num=20&col=1_7&source=&from=&country=&size=&time=&a=&page=1&pf=2131425466&ps=2134309112&dpc=1' % category]
-        self.start_urls = ['http://search.sina.com.cn/?q=%s&range=all&c=news&sort=time&num=20&col=&source=&from=&country=&size=&time=&a=&page=1&ps=2134309112&dpc=1' % self.topic_urlcode]
-        # self.start_urls = ['http://search.sina.com.cn/?q=%s&range=title&c=news&sort=time&num=20&col=&source=&from=&country=&size=&time=&a=&page=1&ps=2134309112&dpc=1' % self.topic_urlcode]
-
+        self.start_urls = ['http://search.sina.com.cn/?q=%s&range=all&c=news&sort=time' % self.topic_urlcode]
         self.conn = MySQLdb.connect(host='localhost', user='root', passwd='123456')
         self.conn.set_character_set('utf8')
         self.cursor = self.conn.cursor()
@@ -48,22 +40,20 @@ class DmozSpider(scrapy.spider.Spider):
     def parse(self, response):
         page = 1
         sel = HtmlXPathSelector(response)
-
         news_info = sel.xpath('//*[@id="result"]/div[1]/text()').extract()[0]
         news_total_num = filter(lambda x:x.isdigit(),news_info)
         news_total_page = int(news_total_num)/20 + 1
         # print self.start_urls
         print news_total_num, news_total_page
 
-        # page = 21
-        # news_total_page = 30
+        page = 1
+        news_total_page = 40
         while page <= news_total_page:
-            url= 'http://search.sina.com.cn/?q=%s&range=all&c=news&sort=time&num=20&col=&source=&from=&country=&size=&time=&a=&page=%d&ps=2134309112&dpc=1' % (self.topic_urlcode, page)
+            url= 'http://search.sina.com.cn/?q=%s&range=all&c=news&sort=time&col=&source=&from=&country=&size=&time=&a=&page=%d&pf=0&ps=0&dpc=1' % (self.topic_urlcode, page)
             print "page:",page
-            # time.sleep(0.2)
+            time.sleep(0.2)
             yield scrapy.http.Request(url,callback=self.parse_url)
             page += 1
-
     # 爬取每一页的url
     def parse_url(self, response):
         sel = HtmlXPathSelector(response)
@@ -81,15 +71,12 @@ class DmozSpider(scrapy.spider.Spider):
                         news_url = sel.xpath(url_xpath).extract()[0].decode('UTF-8')
                     except:
                         news_url = ''
-            # print i,news_url
-            # print type(news_url)
-
+            print i,news_url
             # 爬取正文和评论
             if news_url != '':
                 url_info = {'response_url':news_url, 'topic_id':self.topic_id}
                 # yield UrlsInfoItem(url_info)
                 self.cursor.execute("insert into crawl_url values(null,%s,%s)", (news_url,self.topic_id))
-
                 yield scrapy.http.Request(news_url, callback=self.parse_news)
                 # break
         self.conn.commit()
@@ -98,11 +85,9 @@ class DmozSpider(scrapy.spider.Spider):
     def parse_news(self, response):
         response_str = '%s' % response
         response_url = response_str.split(' ')[-1][:-1]
-
         sel = HtmlXPathSelector(response)
-
         # title
-        title_xpath_list = ['//*[@id="artibodyTitle"]/text()', '//*[@id="main_title"]/text()', '//*[@id="content_body"]/div[1]/div[1]/text()']
+        title_xpath_list = ['//*[@id="title"]/text()', '//*[@id="main_title"]/text()', '//*[@id="content_body"]/div[1]/div[1]/text()']
         news_title = ''
         for i in range(0, len(title_xpath_list)):
             try:
@@ -129,7 +114,6 @@ class DmozSpider(scrapy.spider.Spider):
             # print 'news_time', response
             # self.output_f.write('news_time:%s\n' % response)
         # print news_time
-
 
         # mainbody
         mainbody_full_xpath_list = ['//*[@id="artibody"]/p/text()','//*[@id="content_body"]/div[2]/div[1]/p/text()']
