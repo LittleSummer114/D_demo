@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
     # cursor.execute("create database if not exists sinanews charset utf8 COLLATE utf8_general_ci")
 
-    conn.select_db('newsdemo')
+    conn.select_db('topicdemo')
 
     cursor.execute("create table crawl_comment(id int auto_increment primary key, news_id varchar(25), time varchar(25), uid varchar(25), wb_verified_type int, nick varchar(100), area varchar(50), against int, vote int, comment_body varchar(2550), topic_id int)")
     cursor.execute("create table crawl_news(id int auto_increment primary key, news_id varchar(25), news_channel varchar(8), time varchar(50), title varchar(255), news_body text, url varchar(255), topic_id int)")
