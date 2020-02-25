@@ -3,13 +3,14 @@
 # __author__ = 'hdp'
 import scrapy
 from scrapy.spider import BaseSpider
+from scrapy.spiders import Spider
 from scrapy.selector import HtmlXPathSelector
 import urllib2
 import MySQLdb
 import time
 from sinanews.items import UrlsInfoItem, NewsInfoItem, CommmentInfoItem
 
-class DmozSpider(scrapy.spider.Spider):
+class DmozSpider(Spider):
     print 'test'
     name = "sinanewsurl"    #唯一标识，启动spider时即指定该名称
     allowed_domains = ["sina.com.cn"]
