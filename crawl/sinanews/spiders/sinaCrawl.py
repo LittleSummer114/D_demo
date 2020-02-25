@@ -39,13 +39,15 @@ class DmozSpider(Spider):
         self.output_f = open(ur'problem.txt', 'w')
 
     def parse(self, response):
-        self.cursor.execute("select * from crawl_url")
+        self.cursor.execute("select * from crawl_url limit 10")
         results = self.cursor.fetchall()
         count = 0
         for url in results:
             # print url[1]
-            print "count", count
+            #print "count", count
+
             count += 1
+            print 'original url', url
             yield scrapy.http.Request(url[1], callback=self.parse_news)
             # if(count==1):
             #     break
@@ -66,7 +68,10 @@ class DmozSpider(Spider):
         sel = HtmlXPathSelector(response)
 
         # title
-        title_xpath_list = ['/html/head/title/text()']
+        #title_xpath_list = ['/html/head/title/text()']
+        title_xpath_list = ['//*[@id="title"]/text()', '//*[@id="main_title"]/text()',
+                            '//*[@id="content_body"]/div[1]/div[1]/text()']
+
         news_title = ''
         for i in range(0, len(title_xpath_list)):
             try:
@@ -74,11 +79,16 @@ class DmozSpider(Spider):
                 break
             except:
                 continue
-        print 'news_title', news_title
+
+        print 'news_title', response_url,news_title
         #     self.output_f.write('news_title:%s\n' % response)
         # print news_title
 
-        time_xpath_list = ["/html/head/meta[@name='weibo: article:create_at']/@content"]
+        #time_xpath_list = ["/html/head/meta[@name='weibo: article:create_at']/@content"]
+        time_xpath_list = ['//*[@id="wrapOuter"]/div/div[4]/span/text()', '//*[@id="page-tools"]/span/span[1]/text()',
+                           '//*[@id="content_body"]/div[1]/span[1]/text()', '//*[@id="navtimeSource"]/text()',
+                           '//*[@id="pub_date"]/text()',"/html/head/meta[@name='weibo: article:create_at']/@content"]
+
         news_time = ''
         for i in range(0, len(time_xpath_list)):
             try:
@@ -91,11 +101,13 @@ class DmozSpider(Spider):
         # if news_time == '':
             # print 'news_time', response
             # self.output_f.write('news_time:%s\n' % response)
-        print news_time
+        #print news_time
 
 
         # mainbody
-        mainbody_full_xpath_list = ['//div[@id="artibody"]/p/text()']
+
+        #mainbody_full_xpath_list = ['//div[@id="artibody"]/p/text()']
+        mainbody_full_xpath_list = ['//div[@class="article-body main-body"]/p/text()','//*[@id="artibody"]/p/text()', '//*[@id="content_body"]/div[2]/div[1]/p/text()']
         mainbody_full = ''
         for i in range(0, len(mainbody_full_xpath_list)):
             try:
@@ -106,7 +118,7 @@ class DmozSpider(Spider):
         mainbody = ''
         for p in mainbody_full:
             mainbody = mainbody + '\n' + p.strip()
-        print mainbody
+        #print mainbody
 
         # comment
         news_comment_url = ''
@@ -146,7 +158,7 @@ class DmozSpider(Spider):
             # print news_comment_channel, news_comment_id
 
             self.output_f.write('comment_url:%s,%s,%s\n' % (response,news_comment_channel, news_comment_id))
-        print('测试书',news_comment_id,news_title)
+        #print('测试书',news_comment_id,news_title)
         if news_comment_id != '' and news_title != '':
             self.cursor.execute("insert into crawl_news values(null,%s,%s,%s,%s,%s,%s,%s)", (news_comment_id,news_comment_channel,news_time.encode('utf-8'),news_title.encode('utf-8'),mainbody.encode('utf-8'),response_url,self.topic_id))
             self.conn.commit()
@@ -197,4 +209,3 @@ class DmozSpider(Spider):
             page=page+1
 
         self.conn.commit()
-
