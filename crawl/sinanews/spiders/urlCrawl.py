@@ -180,7 +180,7 @@ class DmozSpider(Spider):
             #     'topic_id':self.topic_id
             # }
             # yield NewsInfoItem(news_info)
-            self.cursor.execute("insert into crawl_news values(null,%s,%s,%s,%s,%s,%s,%s)", (news_comment_id,news_comment_channel,news_time.encode('utf-8'),news_title.encode('utf-8'),mainbody.encode('utf-8'),response_url,self.topic_id))
+            #self.cursor.execute("insert into crawl_news values(null,%s,%s,%s,%s,%s,%s,%s)", (news_comment_id,news_comment_channel,news_time.encode('utf-8'),news_title.encode('utf-8'),mainbody.encode('utf-8'),response_url,self.topic_id))
             self.conn.commit()
         else:
             self.output_f.write('%s\t%s\t%s\t%s\n' % (response,news_title,news_time,news_comment_id))
@@ -242,8 +242,8 @@ class DmozSpider(Spider):
                         #     'topic_id':self.topic_id
                         # }
                         # yield CommmentInfoItem(comment_info)
-                        self.cursor.execute("insert into crawl_comment values(null,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)" , (news_comment_id.encode('utf-8'),status_dic['time'].encode('utf-8'),status_dic['uid'].encode('utf-8'), \
-                                                                       wb_verified_type.encode('utf-8'), nick, area, status_dic['against'].encode('utf-8'),status_dic['vote'].encode('utf-8'),comment_body,self.topic_id))
+                        #self.cursor.execute("insert into crawl_comment values(null,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)" , (news_comment_id.encode('utf-8'),status_dic['time'].encode('utf-8'),status_dic['uid'].encode('utf-8'), \
+                                                                       #wb_verified_type.encode('utf-8'), nick, area, status_dic['against'].encode('utf-8'),status_dic['vote'].encode('utf-8'),comment_body,self.topic_id))
 
             page=page+1
 
