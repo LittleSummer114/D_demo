@@ -4,6 +4,7 @@
 
 import scrapy
 from scrapy.spider import BaseSpider
+from scrapy.spiders import Spider
 from scrapy.selector import HtmlXPathSelector
 import urllib2
 import MySQLdb
@@ -15,7 +16,7 @@ sys.setdefaultencoding('utf-8')
 
 projectpath='C:\\Users\\DongpingHuang\\Desktop\\sinanews\\data\\'
 
-class DmozSpider(scrapy.spider.Spider):
+class DmozSpider(Spider):
     name = "sinanews"    #唯一标识，启动spider时即指定该名称
     allowed_domains = ["sina.com.cn"]
     start_urls = [
