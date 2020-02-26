@@ -8,7 +8,7 @@ import MySQLdb
 
 class SinanewsPipeline(object):
     def __init__(self):
-        self.conn = MySQLdb.connect(host='localhost', user='root', passwd='1234')
+        self.conn = MySQLdb.connect(host='localhost', user='root', passwd='123456')
         self.conn.set_character_set('utf8')
         self.cursor = self.conn.cursor()
         self.cursor.execute('SET NAMES utf8;')

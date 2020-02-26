@@ -39,7 +39,7 @@ class DmozSpider(Spider):
         self.output_f = open(ur'problem.txt', 'w')
 
     def parse(self, response):
-        self.cursor.execute("select * from crawl_url limit 10")
+        self.cursor.execute("select * from crawl_url where topicid=3")
         results = self.cursor.fetchall()
         count = 0
         for url in results:
